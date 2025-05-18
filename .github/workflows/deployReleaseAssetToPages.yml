@@ -15,12 +15,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          mkdir dist
           url=$(gh release view --json assets --jq '.assets[0].url')
-          echo "<meta http-equiv='refresh' content='0;url=${url}'>" > index.html
+          curl -L -H "Authorization: token ${GH_TOKEN}" -H "Accept: application/octet-stream" "${asset_url}" -o dist/pack.mcpack
+          echo "<meta http-equiv='refresh' content='0;url=pack.mcpack'>" > dist/index.html
       - name: Upload files as artifact
         uses: actions/upload-pages-artifact@v3.0.1
         with:
-          path: .
+          path: dist/
   deploy:
     name: Deploy to GitHub Pages
     needs: add-release-asset
