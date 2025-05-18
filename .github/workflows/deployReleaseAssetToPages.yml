@@ -17,8 +17,9 @@ jobs:
         run: |
           mkdir dist
           asset_url=$(gh release view --json assets --jq '.assets[0].url')
-          curl -L -H "Authorization: token ${GH_TOKEN}" -H "Accept: application/octet-stream" "${asset_url}" -o dist/pack.mcpack
-          echo "<meta http-equiv='refresh' content='0;url=pack.mcpack'>" > dist/index.html
+          asset_name=$(gh release view --json assets --jq '.assets[0].name')
+          curl -L -H "Authorization: token ${GH_TOKEN}" -H "Accept: application/octet-stream" "${asset_url}" -o dist/${asset_name}
+          echo "<meta http-equiv='refresh' content='0;url=${asset_name}'>" > dist/index.html
       - name: Upload files as artifact
         uses: actions/upload-pages-artifact@v3.0.1
         with:
